@@ -1,0 +1,3 @@
+---
+gotify_config_dir: "/etc/gotify"
+gotify_config_file: "{{ gotify_config_dir }}/config.yml"

@@ -1,0 +1,26 @@
+[Unit]
+Description=Simple Server For Sending And Receiving Messages
+{% if gotify_database_dialect == "mysql" %}
+After=network.target mariadb.service mysql.service
+{% else %}
+After=network.target
+{% endif %}
+Wants=network-online.target
+
+[Service]
+ExecStart={{ gotify_dest }}
+Type=simple
+User={{ gotify_username }}
+Group={{ gotify_groupname }}
+WorkingDirectory={{ gotify_home }}
+Restart=on-failure
+RestartSec=5
+
+# (Optional hardening)
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
+
