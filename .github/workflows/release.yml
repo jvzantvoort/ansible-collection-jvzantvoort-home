@@ -36,6 +36,11 @@ jobs:
           # commit-message: "chore(release): bump version to {{new-version}} [skip ci]"
           # Only run on specific branches for releases
           branches: main
+          no-node: true
+          no-vlang: true
+          no-rust: true
+          no-golang: true
+
 
       - name: Check if version was bumped (optional, for debugging)
         if: steps.bump_version.outputs.bumped == 'true'
