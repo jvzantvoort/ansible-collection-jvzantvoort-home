@@ -33,7 +33,7 @@ jobs:
           # Set to true to only print what would be done, useful for testing
           # dry-run: true
           # You might want to customize the commit message
-          commit-message: "chore(release): bump version to {{new-version}} [skip ci]"
+          # commit-message: "chore(release): bump version to {{new-version}} [skip ci]"
           # Only run on specific branches for releases
           branches: main
 
