@@ -1,0 +1,24 @@
+---
+
+- name: Setup users
+  become: true
+  block:
+
+    - name: Ensure group exists {{ gotify_groupname }}
+      ansible.builtin.group:
+        name: "{{ gotify_groupname }}"
+        state: present
+        gid: "{{ gotify_gid | default(omit) }}"
+
+
+    - name: Add user {{ gotify_username }}
+      ansible.builtin.user:
+        name: "{{ gotify_username }}"
+        group: "{{ gotify_groupname }}"
+        uid: "{{ gotify_uid | default(omit) }}"
+        comment: "{{ gotify_comment | default(omit) }}"
+        home: "{{ gotify_home }}"
+        shell: /bin/bash
+        createhome: true
+        generate_ssh_key: false
+        state: present

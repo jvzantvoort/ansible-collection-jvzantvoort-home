@@ -1,0 +1,10 @@
+---
+
+- name: Restart gotify service
+  ansible.builtin.systemd_service:
+    name: "gotify.service"
+    daemon_reload: true
+    state: started
+    enabled: true
+
+...

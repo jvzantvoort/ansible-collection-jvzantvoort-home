@@ -1,0 +1,43 @@
+---
+- name: Check if the binary already exists
+  ansible.builtin.stat:
+    path: "{{ gotify_dest_versioned }}"
+  register: destfile
+
+- name: Download and install {{ gotify_dest_versioned }}
+  when: not destfile.stat.exists
+  become: true
+  block:
+
+    - name: Platform specific install tasks
+      ansible.builtin.include_tasks:
+        file: "install.yml"
+
+- name: Setup application user
+  become: true
+  block:
+
+    - name: Ensure the account exists
+      ansible.builtin.include_tasks:
+        file: "user.yml"
+
+- name: Manage database
+  become: true
+  block:
+
+    - name: Platform specific install tasks
+      ansible.builtin.include_tasks:
+        file: "database-{{ gotify_database_dialect }}.yml"
+
+
+- name: Manage configuration
+  become: true
+  block:
+
+    - name: Setup configuration
+      ansible.builtin.include_tasks:
+        file: "config.yml"
+
+    - name: Setup service
+      ansible.builtin.include_tasks:
+        file: "service.yml"

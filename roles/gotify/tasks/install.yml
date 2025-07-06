@@ -1,0 +1,52 @@
+---
+- name: Install binary
+  block:
+    - name: Create temporary build directory
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: tmpdir
+
+    - name: Download gotify
+      ansible.builtin.get_url:
+        url: "{{ gotify_download_url }}"
+        dest: "{{ tmpdir.path }}/gotify.zip"
+        mode: '0440'
+
+    - name: Unarchive a file that is already on the remote machine
+      ansible.builtin.unarchive:
+        src: "{{ tmpdir.path }}/gotify.zip"
+        dest: "{{ tmpdir.path }}"
+        remote_src: true
+
+    - name: Install gotify binary
+      ansible.builtin.copy:
+        src: "{{ tmpdir.path }}/{{ gotify_dl_bin_name }}"
+        dest: "{{ gotify_dest_versioned }}"
+        owner: root
+        group: root
+        mode: '0755'
+        remote_src: true
+
+- name: Remove binary
+  when: tmpdir is defined
+  block:
+
+    - name: Recursively remove temp directory
+      when: tmpdir.path is defined
+      ansible.builtin.file:
+        path: "{{ tmpdir.path }}"
+        state: absent
+
+- name: Set the links to the relevant version
+  block:
+
+    - name: Create a symbolic link to {{ gotify_dest }}
+      ansible.builtin.file:
+        src: "{{ gotify_dest_versioned }}"
+        dest: "{{ gotify_dest }}"
+        owner: 'root'
+        group: 'root'
+        state: link
+
+...

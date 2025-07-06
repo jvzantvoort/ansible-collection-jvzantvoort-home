@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: John van Zantvoort
+  description: Setup gotify
+  company: ""
+
+  license: GPL-2.0-or-later
+
+  min_ansible_version: 2.15
+
+  platforms:
+    - name: EL
+      versions:
+        - 8
+        - 9
+        - 10
+
+  galaxy_tags: []
+
+dependencies: []

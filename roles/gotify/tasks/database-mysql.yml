@@ -1,0 +1,36 @@
+---
+
+- name: Ensure database exists {{ gotify_database_name }}
+  community.mysql.mysql_db:
+    name: "{{ gotify_database_name }}"
+    state: present
+    login_user: "{{ gotify_database_admin_username }}"
+    login_password: "{{ gotify_database_admin_password }}"
+    login_host: "{{ gotify_database_host }}"
+    login_port: "{{ gotify_database_port }}"
+
+- name: Create the gotify database user
+  community.mysql.mysql_user:
+    name: "{{ gotify_database_username }}"
+    password: "{{ gotify_database_password }}"
+    priv: "{{ gotify_database_name }}.*:ALL"
+    host: "%"
+    state: present
+    login_user: "{{ gotify_database_admin_username }}"
+    login_password: "{{ gotify_database_admin_password }}"
+    login_host: "{{ gotify_database_host }}"
+    login_port: "{{ gotify_database_port }}"
+
+- name: Flush MySQL privileges (optional but safe)
+  community.mysql.mysql_user:
+    name: "{{ gotify_database_username }}"
+    host: "%"
+    state: present
+    check_implicit_admin: true
+    update_password: on_create
+    login_user: "{{ gotify_database_admin_username }}"
+    login_password: "{{ gotify_database_admin_password }}"
+    login_host: "{{ gotify_database_host }}"
+    login_port: "{{ gotify_database_port }}"
+
+...
