@@ -1,0 +1,55 @@
+name: Release Ansible Collection
+
+on:
+  push:
+    branches:
+      - main # Or 'master', 'release', etc. - your main development branch
+  workflow_dispatch: # Allows manual trigger for testing
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required for pushing commits and tags
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important for conventional commit actions to read full history
+          token: ${{ secrets.GITHUB_TOKEN }} # Use default GITHUB_TOKEN or a PAT
+
+      - name: Configure Git for automated commits
+        run: |
+          git config user.name "John van Zantvoort - automated"
+          git config user.email "john@vanzantvoort.org"
+
+      - name: Bump version based on Conventional Commits
+        id: bump_version # Give this step an ID to reference its outputs
+        uses: prantlf/bump-version-action@v2
+        with:
+          # Specify the path to your galaxy.yml file relative to the repo root
+          bump-files: galaxy.yml
+          # Set to true to only print what would be done, useful for testing
+          # dry-run: true
+          # You might want to customize the commit message
+          commit-message: "chore(release): bump version to {{new-version}} [skip ci]"
+          # Only run on specific branches for releases
+          branches: main
+
+      - name: Check if version was bumped (optional, for debugging)
+        if: steps.bump_version.outputs.bumped == 'true'
+        run: |
+          echo "New version: ${{ steps.bump_version.outputs.new-version }}"
+          echo "Changed files: ${{ steps.bump_version.outputs.changed-files }}"
+          cat galaxy.yml # Verify the change
+
+      - name: Build and Publish Ansible Collection
+        if: steps.bump_version.outputs.bumped == 'true' # Only publish if a version was bumped
+        uses: artis3n/ansible_galaxy_collection@v2
+        with:
+          api_key: ${{ secrets.GALAXY_API_KEY }}
+          # galaxy_version: ${{ steps.bump_version.outputs.new-version }}
+          publish: false
+          # If your collection is not at the root, specify the directory:
+          # collection_dir: ./my_ansible_collection

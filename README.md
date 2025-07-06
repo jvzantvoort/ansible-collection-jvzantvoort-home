@@ -1,2 +1,3 @@
-# ansible-collection-jvzantvoort-home
-Ansible jvzantvoort.home collection
+# Ansible Collection - jvzantvoort.home
+
+This is a collection for personal use. 
