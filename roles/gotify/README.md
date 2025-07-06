@@ -1,38 +1,62 @@
-Role Name
-=========
+Gotify Role
+===========
 
-A brief description of the role goes here.
+This Ansible role installs and configures [Gotify](https://gotify.net/), a
+simple server for sending and receiving messages in real time, on your target
+hosts.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Ansible 2.15 or higher
+- Target system: EL
+- Python 3 on the target host
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Available variables are listed below, along with their default values (see `defaults/main.yml` for the full list):
+
+```yaml
+gotify_version: "2.4.0"                # Version of Gotify to install
+gotify_user: "gotify"                   # System user to run Gotify
+gotify_group: "gotify"                  # System group for Gotify
+gotify_install_dir: "/opt/gotify"       # Installation directory
+gotify_data_dir: "/var/lib/gotify"      # Data directory
+gotify_port: 8080                       # Port for Gotify web interface
+gotify_binary_url: ""                   # Custom URL for Gotify binary (optional)
+gotify_config: {}                       # Extra configuration options (see Gotify docs)
+```
+
+You can override these variables in your playbook or inventory as needed.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+This role has no external dependencies.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```yaml
+- hosts: servers
+  become: true
+  tasks:
+    - name: Install gotify
+      ansible.builtin.include_role:
+        name: jvzantvoort.home.gotify
+      vars:
+        gotify_database_admin_password: "password"
+        gotify_database_admin_username: "root"
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```
 
 License
 -------
 
-BSD
+GPL-2.0-or-later
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+John van Zantvoort
